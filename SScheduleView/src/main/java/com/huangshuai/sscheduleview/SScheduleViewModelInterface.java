@@ -1,7 +1,5 @@
 package com.huangshuai.sscheduleview;
 
-import android.graphics.Color;
-
 /**
  * Created by huangshuai on 2017/3/23.
  */

@@ -5,22 +5,23 @@
 ![Platform Android](https://img.shields.io/badge/Platform-Android-brightgreen.svg?style=flat)
 [![Weibo](https://img.shields.io/badge/%e5%be%ae%e5%8d%9a-%40%e9%bb%84%e5%b8%85IOT-yellow.svg?style=flat)](http://weibo.com/2189929640)
 
-School ScheduleView for Android, pure code.
+Android 课程表控件，方便快速集成。
 
-[中文文档](https://github.com/huangshuai-IOT/SScheduleView-Android/blob/master/README.zh.md)
+[English Document](https://github.com/huangshuai-IOT/SScheduleView-Android/blob/master/README.md)
 
-## Features
+## 介绍
+本项目基于 RelativeLayout 绘制的课程表控件，方便快速集成。
 
-- Show weekdays date based on course week
-- Support left and right gestures to slide
-- Dynamically set the weekend course display
-- Dynamic changes show course
+## 功能
+- 根据课程周显示本周日期
+- 支持左右手势滑动
+- 动态设置周末课程显示
+- 动态修改显示课程
 
-## Requirements
-
+## 要求
 - Android 17
 
-## Installation
+## 安装
 ### Step 1. Add the JitPack repository to your build file
 #### gradle
 
@@ -51,9 +52,7 @@ dependencies {
 	        compile 'com.github.huangshuai-IOT:SScheduleView-Android:0.1.0'
 }
 ```
-
 #### maven
-
 ```ruby
 <dependency>
 	    <groupId>com.github.huangshuai-IOT</groupId>
@@ -64,12 +63,12 @@ dependencies {
 
 ### Demo
 
-run  at `demo` project before run the demo.
+运行 Demo ，请下载后运行demo即可。
 
-## Usage （Support xml and code）
-### xml usage
+## 使用 （支持 xml 和代码）
+### xml 用法
 
-In xml can be directly introduced.
+在xml中直接引入即可。
 
 ```XML
 <com.huangshuai.sscheduleview.SScheduleView
@@ -78,12 +77,12 @@ In xml can be directly introduced.
         android:layout_height="match_parent" />
 ```
 
-### Code implementation
+### 代码布局
 
 
-### Bind Displays the schedule data
+### 绑定显示课表数据
 
-The application's data type should implement the `SScheduleViewModelInterface` protocol
+应用的课程表数据类型应该实现 `SScheduleViewModelInterface` 协议
 
 ```Java
 public interface SScheduleViewModelInterface {
@@ -105,18 +104,18 @@ public interface SScheduleViewModelInterface {
 }
 ```
 
-After that, call the update data function to display the lesson data
+之后，调用更新数据函数，即可显示课表数据
 
 ```Java 
 private List<SScheduleViewModelInterface> thisWeekCourseList = new ArrayList<>();
 scheduleView.updateCourseViews(thisWeekCourseList);
 ```
 
-### Listening to player state changes
+### 监听状态变化
 
-See more detail from the Example project
+具体用法请看 Example 项目
 
-#### Delegate
+#### 协议方式
 
 ```Java
 public interface SScheduleViewCallBack {
@@ -128,7 +127,7 @@ public interface SScheduleViewCallBack {
 }
 ```
 
-## Customize SScheduleView
+## SScheduleView 自定义属性
 
 ```Java
     public void setShowTotalDay(int num);
@@ -142,16 +141,18 @@ public interface SScheduleViewCallBack {
     public void clearOldCourseView();
 ```
 
-## Contact me
+## 联系我
 
-- Weibo: [黄帅IOT](http://weibo.com/u/2189929640)
-- Blog: https://huangshuai-iot.github.io/
-- Email: shuai.huang.iot@foxmail.com
+- 微博: [黄帅IOT](http://weibo.com/u/2189929640)
+- 博客: https://huangshuai-iot.github.io/
+- 邮箱: shuai.huang.iot@foxmail.com
 
-## Contributors
+## 贡献者
 
-You are welcome to fork and submit pull requests.
+欢迎提交 issue 和 PR，大门永远向所有人敞开。
 
 ## License
+
 SScheduleView is available under the MIT license. See the LICENSE file for more info.
+
 
