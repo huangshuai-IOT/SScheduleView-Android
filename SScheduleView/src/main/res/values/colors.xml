@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- 主文字颜色 -->
+    <color name="DarkTextColor">#555555</color>
+    <!-- 二级文字颜色 -->
+    <color name="GreyTextColor">#777777</color>
+    <!-- 三级文字颜色 -->
+    <color name="LightTextColor">#b2b2b2</color>
+    <!-- 分割线颜色 -->
+    <color name="SeperatorColor">#dfdfdf</color>
+    <!-- 空白部分背景色 -->
+    <color name="BlankAreaColor">#f5f5f6</color>
+    <!-- 内容部分背景色 -->
+    <color name="WhiteBackColor">#ffffff</color>
+
+    <color name="Mint">#00C6AD</color>
+    <color name="Green">#02D286</color>
+    <color name="SkyBlue">#38A9E0</color>
+    <color name="ForestGreen">#3E7054</color>
+    <color name="Teal">#468294</color>
+    <color name="Blue">#627AAF</color>
+    <color name="Brown">#735744</color>
+    <color name="Plum">#744670</color>
+    <color name="Purple">#8974CD</color>
+    <color name="Marnoon">#8E4238</color>
+    <color name="Magenta">#AF70C0</color>
+    <color name="Lime">#B2CF55</color>
+    <color name="Coffee">#B49885</color>
+    <color name="Orange">#EF9235</color>
+    <color name="Red">#F3674E</color>
+    <color name="WaterLemon">#F8888C</color>
+    <color name="Pink">#FD94CE</color>
+
+</resources>
