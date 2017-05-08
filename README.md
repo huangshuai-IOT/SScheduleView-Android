@@ -16,6 +16,7 @@ School ScheduleView for Android, pure code.
 - Dynamically set the weekend course display
 - Dynamic changes show course
 
+![Demo](https://github.com/huangshuai-IOT/SScheduleView-Android/blob/master/demo.gif)
 ## Requirements
 
 - Android 17

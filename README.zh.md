@@ -11,6 +11,7 @@ Android 课程表控件，方便快速集成。
 
 ## 介绍
 本项目基于 RelativeLayout 绘制的课程表控件，方便快速集成。
+![演示](https://github.com/huangshuai-IOT/SScheduleView-Android/blob/master/demo.gif)
 
 ## 功能
 - 根据课程周显示本周日期
