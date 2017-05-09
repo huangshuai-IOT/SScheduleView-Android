@@ -1,4 +1,4 @@
-package com.huangshuai.sscheduleview.Model;
+package com.huangshuai.demo.Model;
 
 import com.huangshuai.sscheduleview.SScheduleViewModelInterface;
 
