@@ -1,4 +1,4 @@
-﻿package com.huangshuai.demo;
+package com.huangshuai.demo;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;

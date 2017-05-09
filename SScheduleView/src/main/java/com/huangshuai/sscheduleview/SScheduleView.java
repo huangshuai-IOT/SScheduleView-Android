@@ -15,7 +15,6 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import java.text.ParseException;
@@ -34,6 +33,7 @@ import static com.huangshuai.sscheduleview.SScheduleViewUtils.getDaysListForWeek
  */
 
 public class SScheduleView extends RelativeLayout {
+    final float FLIP_DISTANCE = 50;
     // 其他列宽度 与 第一列宽度 比
     private int sideColWidthRatio = 2;
     // 顶部日期栏 View 背景色
@@ -88,6 +88,7 @@ public class SScheduleView extends RelativeLayout {
     private int todayNum;// 今日周几
     private int twoW;
     private int oneW;
+    private PScrollView mScrollView;
 
     /**
      * 设置一周显示的天数
@@ -307,19 +308,29 @@ public class SScheduleView extends RelativeLayout {
      * 整个下面是一个ScrollView
      */
     private void drawOtherRows() {
-        ScrollView scrollView = new ScrollView(getContext());
+        mScrollView = new PScrollView(getContext());
         LayoutParams scrollViewLP = new LayoutParams(android.view.ViewGroup.LayoutParams.MATCH_PARENT, android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
         scrollViewLP.addRule(RelativeLayout.BELOW, headView.getId());
-        scrollView.setLayoutParams(scrollViewLP);
-        scrollView.setVerticalScrollBarEnabled(false);
+        mScrollView.setLayoutParams(scrollViewLP);
+        mScrollView.setVerticalScrollBarEnabled(false);
 
         LinearLayout scrollContentView = new LinearLayout(getContext());
         ViewGroup.LayoutParams scrollContentViewLP = new ViewGroup.LayoutParams(android.view.ViewGroup.LayoutParams.MATCH_PARENT, android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
         scrollContentView.setLayoutParams(scrollContentViewLP);
 
-        scrollView.addView(scrollContentView);
-        addView(scrollView);
-
+        mScrollView.addView(scrollContentView);
+        addView(mScrollView);
+        mScrollView.setScrollViewListener(new PScrollView.ScrollViewListener() {
+            @Override
+            public void onScrollChanged(int x, int y, int oldx, int oldy) {
+                if (oldx - x > FLIP_DISTANCE) {
+                    flingLeft();
+                }
+                if (x - oldx > FLIP_DISTANCE) {
+                    flingRight();
+                }
+            }
+        });
         drawOtherRowFirstCol(scrollContentView);
         drawOtherRowOtherCol(scrollContentView);
     }
@@ -434,34 +445,26 @@ public class SScheduleView extends RelativeLayout {
     private class GestureListener extends GestureDetector.SimpleOnGestureListener {
         @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-            final float FLIP_DISTANCE = 50;
-
             if (e1.getX() - e2.getX() > FLIP_DISTANCE) {
-                // 向左滑
-                showWeekNum = showWeekNum + 1;
-                setShowWeek(showWeekNum);
-                callBack.swipeGestureLeft();
-                return true;
+                flingLeft();
             }
             if (e2.getX() - e1.getX() > FLIP_DISTANCE) {
-                // 向右滑
-                if (showWeekNum > 1) {
-                    showWeekNum = showWeekNum - 1;
-                    setShowWeek(showWeekNum);
-                    callBack.swipeGestureRight();
-                }
-                return true;
+                flingRight();
             }
-            if (e1.getY() - e2.getY() > FLIP_DISTANCE) {
-                Log.i("MYTAG", "向上滑...");
-                return true;
-            }
-            if (e2.getY() - e1.getY() > FLIP_DISTANCE) {
-                Log.i("MYTAG", "向下滑...");
-                return true;
-            }
+            return true;
+        }
+    }
 
-            return false;
+    private void flingLeft(){
+        showWeekNum = showWeekNum + 1;
+        setShowWeek(showWeekNum);
+        callBack.swipeGestureLeft();
+    }
+    private void flingRight(){
+        if (showWeekNum > 1) {
+            showWeekNum = showWeekNum - 1;
+            setShowWeek(showWeekNum);
+            callBack.swipeGestureRight();
         }
     }
 
