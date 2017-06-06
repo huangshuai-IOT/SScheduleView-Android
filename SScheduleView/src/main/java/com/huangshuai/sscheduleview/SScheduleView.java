@@ -1,22 +1,18 @@
 package com.huangshuai.sscheduleview;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.drawable.GradientDrawable;
-import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.GestureDetector;
-import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
+
+import com.huangshuai.adapter.CustomSSViewAdapter;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -24,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Random;
 import java.util.TimeZone;
 
 import static com.huangshuai.sscheduleview.SScheduleViewUtils.getDaysListForWeek;
@@ -34,6 +29,8 @@ import static com.huangshuai.sscheduleview.SScheduleViewUtils.getDaysListForWeek
  */
 
 public class SScheduleView extends RelativeLayout {
+    //滑动阈值
+    final float FLIP_DISTANCE = 50;
     // 其他列宽度 与 第一列宽度 比
     private int sideColWidthRatio = 2;
     // 顶部日期栏 View 背景色
@@ -88,6 +85,9 @@ public class SScheduleView extends RelativeLayout {
     private int todayNum;// 今日周几
     private int twoW;
     private int oneW;
+    private PScrollView mScrollView;
+
+    private CustomSSViewAdapter mAdapter;
 
     /**
      * 设置一周显示的天数
@@ -190,6 +190,10 @@ public class SScheduleView extends RelativeLayout {
     }
 
     private void init(Context context) {
+        if(mAdapter==null){
+            mAdapter=new CustomSSViewAdapter(context);
+        }
+        initAdapterData();
         twoW = SScheduleViewUtils.dip2px(context, 2);
         oneW = SScheduleViewUtils.dip2px(context, 1);
 
@@ -198,6 +202,13 @@ public class SScheduleView extends RelativeLayout {
         todayNum = calendar.get(Calendar.DAY_OF_WEEK) - 1;
         datesOfMonth = SScheduleViewUtils.getOneWeekDatesOfMonth(showDaysNum, System.currentTimeMillis());
         preMonth = datesOfMonth[showDaysNum];
+    }
+
+    private void initAdapterData() {
+        showDaysNum=mAdapter.getShowDaysNum();
+        showJiesNum=mAdapter.getShowJiesNum();
+//        sideColWidthRatio=mAdapter.getSideColWidthRatio();
+
     }
 
     private void initUI() {
@@ -244,12 +255,13 @@ public class SScheduleView extends RelativeLayout {
      * 绘制第一行第一列
      */
     private void drawFirstRowFirstColCell() {
-        firstTV = new TextView(getContext());
+        firstTV=mAdapter.getHeadView();
+//        firstTV = new TextView(getContext());
         RelativeLayout.LayoutParams rlp = new RelativeLayout.LayoutParams(firstColumnWidth, firstRowHeight);
-        firstTV.setBackgroundColor(getResources().getColor(R.color.BlankAreaColor));
         firstTV.setText(datesOfMonth[7]);
-        firstTV.setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL);
-        firstTV.setTextSize(TypedValue.COMPLEX_UNIT_SP, 11);
+//        firstTV.setBackgroundColor(getResources().getColor(R.color.BlankAreaColor));
+//        firstTV.setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL);
+//        firstTV.setTextSize(TypedValue.COMPLEX_UNIT_SP, 11);
         firstTV.setPadding(oneW, twoW, oneW, twoW);
         firstTV.setLayoutParams(rlp);
         headView.addView(firstTV);
@@ -261,43 +273,41 @@ public class SScheduleView extends RelativeLayout {
     private void drawFirstRowOtherColCell() {
 
         for (int i = 0; i < showDaysNum; i++) {
-
-            LinearLayout headViewCell = new LinearLayout(getContext());
-            headViewCell.setBackgroundResource(R.drawable.head_view_back);
-            headViewCell.setOrientation(LinearLayout.VERTICAL);
-
+            boolean isToday=US_DAYS_NUMS[todayNum] - 1 == i;
+            View headViewCell=mAdapter.getWeekTitleView(titleNames[i],datesOfMonth[i],firstRowHeight,isToday);
+//            LinearLayout headViewCell = new LinearLayout(getContext());
+//            headViewCell.setBackgroundResource(R.drawable.head_view_back);
+//            headViewCell.setOrientation(LinearLayout.VERTICAL);
+//
             FrameLayout.LayoutParams flp = new FrameLayout.LayoutParams(notFirstEveryColumnsWidth,
                     firstRowHeight);
             flp.setMargins(firstColumnWidth + i * notFirstEveryColumnsWidth, 0, 0, 0);
 
             headViewCell.setLayoutParams(flp);
-
-
-            LinearLayout.LayoutParams tvLLP = new LinearLayout.LayoutParams(android.view.ViewGroup.LayoutParams.MATCH_PARENT,
-                    firstRowHeight / 2);
-
-            TextView dayTV = new TextView(getContext());
-            dayTV.setText(titleNames[i]);
-            dayTV.setLayoutParams(tvLLP);
-            dayTV.setGravity(Gravity.CENTER);
-//            dayTV.setPadding(twoW, twoW, twoW, twoW);
-            dayTV.setTextSize(TypedValue.COMPLEX_UNIT_SP, 11);
-            headViewCell.addView(dayTV);
-
-            TextView dateTV = new TextView(getContext());
-            dateTV.setLayoutParams(tvLLP);
-            dateTV.setText(datesOfMonth[i]);
-            dateTV.setGravity(Gravity.CENTER | Gravity.BOTTOM);
-//            dateTV.setPadding(twoW, 0, twoW, twoW * 2);
-            dateTV.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
-            headViewCell.addView(dateTV);
-
-            if (US_DAYS_NUMS[todayNum] - 1 == i) {
-                headViewCell.setBackgroundColor(0x77069ee9);
-                dateTV.setTextColor(Color.WHITE);
-                dayTV.setTextColor(Color.WHITE);
-            }
-
+//
+//
+//            LinearLayout.LayoutParams tvLLP = new LinearLayout.LayoutParams(android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+//                    firstRowHeight / 2);
+//
+//            TextView dayTV = new TextView(getContext());
+//            dayTV.setText(titleNames[i]);
+//            dayTV.setLayoutParams(tvLLP);
+//            dayTV.setGravity(Gravity.CENTER);
+//            dayTV.setTextSize(TypedValue.COMPLEX_UNIT_SP, 11);
+//            headViewCell.addView(dayTV);
+//
+//            TextView dateTV = new TextView(getContext());
+//            dateTV.setLayoutParams(tvLLP);
+//            dateTV.setText(datesOfMonth[i]);
+//            dateTV.setGravity(Gravity.CENTER | Gravity.BOTTOM);
+//            dateTV.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
+//            headViewCell.addView(dateTV);
+//
+//            if (US_DAYS_NUMS[todayNum] - 1 == i) {
+//                headViewCell.setBackgroundColor(0x77069ee9);
+//                dateTV.setTextColor(Color.WHITE);
+//                dayTV.setTextColor(Color.WHITE);
+//            }
             headView.addView(headViewCell);
         }
     }
@@ -307,19 +317,29 @@ public class SScheduleView extends RelativeLayout {
      * 整个下面是一个ScrollView
      */
     private void drawOtherRows() {
-        ScrollView scrollView = new ScrollView(getContext());
+        mScrollView = new PScrollView(getContext());
         LayoutParams scrollViewLP = new LayoutParams(android.view.ViewGroup.LayoutParams.MATCH_PARENT, android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
         scrollViewLP.addRule(RelativeLayout.BELOW, headView.getId());
-        scrollView.setLayoutParams(scrollViewLP);
-        scrollView.setVerticalScrollBarEnabled(false);
+        mScrollView.setLayoutParams(scrollViewLP);
+        mScrollView.setVerticalScrollBarEnabled(false);
 
         LinearLayout scrollContentView = new LinearLayout(getContext());
         ViewGroup.LayoutParams scrollContentViewLP = new ViewGroup.LayoutParams(android.view.ViewGroup.LayoutParams.MATCH_PARENT, android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
         scrollContentView.setLayoutParams(scrollContentViewLP);
 
-        scrollView.addView(scrollContentView);
-        addView(scrollView);
-
+        mScrollView.addView(scrollContentView);
+        addView(mScrollView);
+        mScrollView.setScrollViewListener(new PScrollView.ScrollViewListener() {
+            @Override
+            public void onScrollChanged(int x, int y, int oldx, int oldy) {
+                if (oldx - x > FLIP_DISTANCE) {
+                    flingLeft();
+                }
+                if (x - oldx > FLIP_DISTANCE) {
+                    flingRight();
+                }
+            }
+        });
         drawOtherRowFirstCol(scrollContentView);
         drawOtherRowOtherCol(scrollContentView);
     }
@@ -337,13 +357,14 @@ public class SScheduleView extends RelativeLayout {
         scrollContentView.addView(sideView);
 
         for (int i = 0; i < showJiesNum; i++) {
-            TextView jieciTV = new TextView(getContext());
+            View jieciTV=mAdapter.getPeriodView(i+1+"");
+//            TextView jieciTV = new TextView(getContext());
             LinearLayout.LayoutParams jieciTVLP = new LinearLayout.LayoutParams(firstColumnWidth, notFirstEveryRowHeight);
             jieciTV.setLayoutParams(jieciTVLP);
             jieciTV.setBackgroundResource(R.drawable.side_view_back);
-            jieciTV.setText("" + (i + 1));
-            jieciTV.setGravity(Gravity.CENTER);
-            jieciTV.setTextColor(Color.GRAY);
+//            jieciTV.setText("" + (i + 1));
+//            jieciTV.setGravity(Gravity.CENTER);
+//            jieciTV.setTextColor(Color.GRAY);
             sideView.addView(jieciTV);
         }
     }
@@ -364,10 +385,11 @@ public class SScheduleView extends RelativeLayout {
             final int row = i / showDaysNum;
             final int col = i % showDaysNum;
             // 课程背景格子
-            FrameLayout courseBackView = new FrameLayout(getContext());
+            View courseBackView=mAdapter.getCourseBackView();
+//            FrameLayout courseBackView = new FrameLayout(getContext());
             FrameLayout.LayoutParams courseBackViewLP = new FrameLayout.LayoutParams(notFirstEveryColumnsWidth,
                     notFirstEveryRowHeight);
-            courseBackView.setBackgroundResource(R.drawable.course_back);
+//            courseBackView.setBackgroundResource(R.drawable.course_back);
             courseBackViewLP.setMargins(col * notFirstEveryColumnsWidth, row * notFirstEveryRowHeight, 0, 0);
             courseBackView.setLayoutParams(courseBackViewLP);
             contentView.addView(courseBackView);
@@ -387,23 +409,23 @@ public class SScheduleView extends RelativeLayout {
             courseBackViewFLP.setMargins((data.getDay() - 1) * notFirstEveryColumnsWidth, (data.getJieci() - 1) * notFirstEveryRowHeight, 0, 0);
             courseBackView.setLayoutParams(courseBackViewFLP);
             courseBackView.setPadding(twoW, twoW, twoW, twoW);
-
-            TextView couseInfoTV = new TextView(getContext());
-            couseInfoTV.setText(data.getCourseName() + "\n" + data.getClassRoom());
-            couseInfoTV.setTextColor(Color.WHITE);
-            couseInfoTV.setGravity(Gravity.CENTER);
-            couseInfoTV.setPadding(oneW, oneW, oneW, oneW);
-            couseInfoTV.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10);
-            couseInfoTV.setEllipsize(TextUtils.TruncateAt.END);
-            couseInfoTV.setLines(7);
+            TextView couseInfoTV=mAdapter.getCourseView(data);
+//            TextView couseInfoTV = new TextView(getContext());
+//            couseInfoTV.setText(data.getCourseName() + "\n" + data.getClassRoom());
+//            couseInfoTV.setTextColor(Color.WHITE);
+//            couseInfoTV.setGravity(Gravity.CENTER);
+//            couseInfoTV.setPadding(oneW, oneW, oneW, oneW);
+//            couseInfoTV.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10);
+//            couseInfoTV.setEllipsize(TextUtils.TruncateAt.END);
+//            couseInfoTV.setLines(7);
 
             // 设置背景颜色
-            int bg = new Random().nextInt(SScheduleTheme.COURSE_BG.length - 1);
-            couseInfoTV.setBackgroundResource(SScheduleTheme.COURSE_BG[bg]);
-            if (data.getBackColor() != 0) {
-                GradientDrawable myGrad = (GradientDrawable) couseInfoTV.getBackground();
-                myGrad.setColor(data.getBackColor());
-            }
+//            int bg = new Random().nextInt(SScheduleTheme.COURSE_BG.length - 1);
+//            couseInfoTV.setBackgroundResource(SScheduleTheme.COURSE_BG[bg]);
+//            if (data.getBackColor() != 0) {
+//                GradientDrawable myGrad = (GradientDrawable) couseInfoTV.getBackground();
+//                myGrad.setColor(data.getBackColor());
+//            }
 
             courseBackViewFLP = new FrameLayout.LayoutParams(android.view.ViewGroup.LayoutParams.MATCH_PARENT, android.view.ViewGroup.LayoutParams.MATCH_PARENT);
             couseInfoTV.setLayoutParams(courseBackViewFLP);
@@ -434,39 +456,35 @@ public class SScheduleView extends RelativeLayout {
     private class GestureListener extends GestureDetector.SimpleOnGestureListener {
         @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-            final float FLIP_DISTANCE = 50;
-
             if (e1.getX() - e2.getX() > FLIP_DISTANCE) {
-                // 向左滑
-                showWeekNum = showWeekNum + 1;
-                setShowWeek(showWeekNum);
-                callBack.swipeGestureLeft();
-                return true;
+                flingLeft();
             }
             if (e2.getX() - e1.getX() > FLIP_DISTANCE) {
-                // 向右滑
-                if (showWeekNum > 1) {
-                    showWeekNum = showWeekNum - 1;
-                    setShowWeek(showWeekNum);
-                    callBack.swipeGestureRight();
-                }
-                return true;
+                flingRight();
             }
-            if (e1.getY() - e2.getY() > FLIP_DISTANCE) {
-                Log.i("MYTAG", "向上滑...");
-                return true;
-            }
-            if (e2.getY() - e1.getY() > FLIP_DISTANCE) {
-                Log.i("MYTAG", "向下滑...");
-                return true;
-            }
+            return true;
+        }
+    }
 
-            return false;
+    private void flingLeft(){
+        showWeekNum = showWeekNum + 1;
+        setShowWeek(showWeekNum);
+        callBack.swipeGestureLeft();
+    }
+    private void flingRight(){
+        if (showWeekNum > 1) {
+            showWeekNum = showWeekNum - 1;
+            setShowWeek(showWeekNum);
+            callBack.swipeGestureRight();
         }
     }
 
     private void updateHeadView() {
         removeView(headView);
         drawFirstRow();
+    }
+
+    public void setAdapter(CustomSSViewAdapter adapter) {
+        mAdapter = adapter;
     }
 }

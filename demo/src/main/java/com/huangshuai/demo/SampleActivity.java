@@ -1,4 +1,4 @@
-package com.huangshuai.sscheduleview;
+package com.huangshuai.demo;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -7,7 +7,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.huangshuai.sscheduleview.Model.AHCourseModel;
+import com.huangshuai.adapter.CustomSSViewAdapter;
+import com.huangshuai.demo.Model.AHCourseModel;
+import com.huangshuai.sscheduleview.SScheduleView;
+import com.huangshuai.sscheduleview.SScheduleViewCallBack;
+import com.huangshuai.sscheduleview.SScheduleViewModelInterface;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +40,7 @@ public class SampleActivity extends AppCompatActivity implements SScheduleViewCa
         scheduleView.setTermStartDate("2017-02-13");
         scheduleView.setShowWeek(showWeekNum);
         scheduleView.callBack = this;
-
+        scheduleView.setAdapter(new CustomSSViewAdapter(this));
         loadCourseData();
     }
 
