@@ -96,6 +96,9 @@ public class SScheduleView extends RelativeLayout {
      */
     public void setShowTotalDay(int num) {
         this.showDaysNum = num;
+        if(mAdapter!=null){
+            mAdapter.setShowDaysNum(num);
+        }
         resetLayout();
     }
 

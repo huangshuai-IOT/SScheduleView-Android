@@ -23,8 +23,15 @@ import java.util.Random;
 
 public class CustomSSViewAdapter {
     private Context mContext;
+    // 显示几天课表
+    private int showDaysNum ;
+    // 一共显示的课程节数
+    private int showJiesNum;
+
     public CustomSSViewAdapter(Context context){
         mContext=context;
+        showDaysNum=5;
+        showJiesNum=11;
     }
 
     /**
@@ -44,10 +51,13 @@ public class CustomSSViewAdapter {
      * @return
      */
     public int getShowDaysNum(){
-        return 5;
+        return showDaysNum;
     }
 
-//    public int getSideColWidthRatio(){
+    public void setShowDaysNum(int showDaysNum) {
+        this.showDaysNum = showDaysNum;
+    }
+    //    public int getSideColWidthRatio(){
 //        return 2;
 //    }
 
@@ -56,7 +66,11 @@ public class CustomSSViewAdapter {
      * @return
      */
     public int getShowJiesNum(){
-        return 11;
+        return showJiesNum;
+    }
+
+    public void setShowJiesNum(int showJiesNum) {
+        this.showJiesNum = showJiesNum;
     }
 
     /**
