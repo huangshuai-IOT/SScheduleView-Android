@@ -1,6 +1,6 @@
 # SScheduleView
 
-![Version 0.1.0](https://img.shields.io/badge/Version-0.1.0-brightgreen.svg?style=flat)
+[![](https://www.jitpack.io/v/huangshuai-IOT/SScheduleView-Android.svg)](https://www.jitpack.io/#huangshuai-IOT/SScheduleView-Android)
 [![License](https://img.shields.io/cocoapods/l/SScheduleView.svg?style=flat)](http://cocoapods.org/pods/SScheduleView)
 ![Platform Android](https://img.shields.io/badge/Platform-Android-brightgreen.svg?style=flat)
 [![Weibo](https://img.shields.io/badge/%e5%be%ae%e5%8d%9a-%40%e9%bb%84%e5%b8%85IOT-yellow.svg?style=flat)](http://weibo.com/2189929640)
@@ -50,7 +50,7 @@ allprojects {
 
 ```ruby
 dependencies {
-	        compile 'com.github.huangshuai-IOT:SScheduleView-Android:0.1.0'
+	        compile 'com.github.huangshuai-IOT:SScheduleView-Android:0.2.0'
 }
 ```
 #### maven
@@ -58,7 +58,7 @@ dependencies {
 <dependency>
 	    <groupId>com.github.huangshuai-IOT</groupId>
 	    <artifactId>SScheduleView-Android</artifactId>
-	    <version>0.1.0</version>
+	    <version>0.2.0</version>
 	</dependency>
 ```
 
